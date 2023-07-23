@@ -1,27 +1,31 @@
 import React, { useState } from "react";
 import './App.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPencil } from "@fortawesome/free-solid-svg-icons";
+import { faPencil, faPlus } from "@fortawesome/free-solid-svg-icons";
 
 
 function App() {
   const [todo, setTodo] = useState("");
   const [list, setList] = useState([]);
+  const [completedTask, setCompletedTask] = useState([]);
 
-  function handleTodo (e) {
+  function handleTodo(e) {
     setTodo(e.target.value);
   }
 
   function handleAdd() {
     if (todo.trim() !== "") {
       setList((prevList) => [...prevList, todo]);
+      setCompletedTask((prevTasks) => [...prevTasks, false]); // Initialize with false for new item
       setTodo("");
     }
   }
 
   function handleDelete(index) {
     const updatedList = list.filter((item, i) => i !== index);
+    const updatedCompletedTasks = completedTask.filter((item, i) => i !== index);
     setList(updatedList);
+    setCompletedTask(updatedCompletedTasks);
   }
 
   function handleKeyPress(event) {
@@ -29,7 +33,6 @@ function App() {
       handleAdd();
     }
   }
-  
 
   return (
     <div className="App">
@@ -39,47 +42,42 @@ function App() {
             <h1>
               Todo App
             </h1>
-            <p>Completed: 0/{list.length} </p>
+            <p>Completed: {completedTask.filter(item => item).length}/{list.length} </p>
           </header>
-
-          <button onClick={handleAdd}>
-            <span>
-              <svg
-                stroke="currentColor"
-                fill="currentColor"
-                strokeWidth="0"
-                viewBox="0 0 512 512"
-                height="1em"
-                width="1em"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M416 277.333H277.333V416h-42.666V277.333H96v-42.666h138.667V96h42.666v138.667H416v42.666z"></path>
-              </svg>
-            </span>
-          </button>
-          <div className='input'>
-            <input
-              type="text"
-              placeholder="add a todo..."
-              name="input"
-              value={todo}
-              onChange={(e) => handleTodo(e)}
-              onKeyDown={handleKeyPress}
-            />
+          <div className="row">
+            <button onClick={handleAdd}>
+              <FontAwesomeIcon icon={faPlus} className="add" />
+            </button>
+            <div className='input'>
+              <input
+                type="text"
+                placeholder="add a todo..."
+                name="input"
+                value={todo}
+                onChange={(e) => handleTodo(e)}
+                onKeyDown={handleKeyPress}
+                className="inp-txt"
+              />
+            </div>
           </div>
-
           <ul>
             {list.map((item, index) => (
-              <li key={index}> 
-                <span className='completed'>
-                  <input id={`checkbox-${index}`} type="checkbox" />
-                  {item}
+              <li className={`row align-center ${completedTask[index] ? "completed" : ""}`} key={index}>
+                <span className='row align-center'>
+                  <input
+                    id={`checkbox-${index}`}
+                    type="checkbox"
+                    checked={completedTask[index]}
+                    onChange={() => {
+                      const updatedTasks = [...completedTask];
+                      updatedTasks[index] = !completedTask[index];
+                      setCompletedTask(updatedTasks);
+                    }}
+                  />
+                  <span className="item">{item}</span>
                 </span>
-           
-                
-                  <FontAwesomeIcon icon={faPencil}  />
-             
-                <button className="danger" onClick={()=>handleDelete(index)}>
+                {/* <FontAwesomeIcon icon={faPencil} /> */}
+                <button className="danger" onClick={() => handleDelete(index)}>
                   <svg
                     stroke="currentColor"
                     fill="none"
