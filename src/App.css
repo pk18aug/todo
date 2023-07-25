@@ -108,12 +108,18 @@ input[type="checkbox" i] {
 
 .add {
   height: 5vh;
+  width: 3vw;
+  border-radius: 10%;
 }
 
 .row {
   display: flex;
 }
-
+.update{
+  width: 15px;
+  height: 15px;
+  margin-left: 84%;
+}
 .input {
   width: 100%;
 }
